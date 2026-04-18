@@ -1,17 +1,36 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from './assets/vite.svg'
+// import heroImg from './assets/hero.png'
 import './App.css'
-import { BrowserRouter, Routes } from 'react-router-dom'
-import { GoogleAuthProvider } from 'firebase/auth/web-extension'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+// import { GoogleAuthProvider } from 'firebase/auth/web-extension'
 
 function login(){
   // return <h1>Login</h1>;
+  const handleGoogleLogin = () => {
+    const provider = new GoogleAuthProvider();
+    // Implement the logic to sign in with Google using Firebase Authentication
+  }
+
+  const handleSubmit = async(event) => {
+    event.preventDefault();
+    const username = event.target.username.value;
+    const password = event.target.password.value;
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email: username, password})
+    })
+    const data = await res.json()
+    localStorage.setItem('token', data.token)
+    window.location.href = '/laptop'
+  }
+  return(
   <section id="center">
     <div>
       <h1>Login Page</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label htmlFor="username">Username:</label>
         <input type="text" id="username" name="username" />
         <br />
@@ -20,17 +39,9 @@ function login(){
         <br />
         <button type="submit">Login</button>
       </form>
-      {/* /* OAutheticate - how to  */} 
     </div>
-
-
-    {/* <button
-      className="counter"
-      onClick={() => setCount((count) => count + 1)}
-    >
-      Count is {count}
-    </button> */}
   </section>
+  )
 }
 
 function register(){
@@ -62,7 +73,6 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <GoogleAuthProvider>
       <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -89,7 +99,6 @@ function App() {
           </nav>
         </div> */}
       </BrowserRouter>
-    </GoogleAuthProvider>
   )
 }
 
