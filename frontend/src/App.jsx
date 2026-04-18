@@ -3,16 +3,12 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Routes } from 'react-router-dom'
+import { GoogleAuthProvider } from 'firebase/auth/web-extension'
 
 function login(){
   // return <h1>Login</h1>;
   <section id="center">
-    {/* <div className="hero">
-      <img src={heroImg} className="base" width="170" height="179" alt="" />
-      <img src={reactLogo} className="framework" alt="React logo" />
-      <img src={viteLogo} className="vite" alt="Vite logo" />
-    </div> */}
     <div>
       <h1>Login Page</h1>
       <form>
@@ -26,17 +22,20 @@ function login(){
       </form>
       {/* /* OAutheticate - how to  */} 
     </div>
-    <button
+
+
+    {/* <button
       className="counter"
       onClick={() => setCount((count) => count + 1)}
     >
       Count is {count}
-    </button>
+    </button> */}
   </section>
 }
 
 function register(){
-  return <h1>Register</h1>;
+  // return <h1>Register</h1>;
+
 }
 
 function laptop(){
@@ -63,23 +62,34 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <BrowserRouter>
-      <div className="App">
-        <h1>TechPod</h1>
-        <p>Welcome to TechPod, your one-stop shop for all things tech! We offer a wide range of laptops, accessories, and more. Whether you're a student, a professional, or just a tech enthusiast, we've got something for everyone. Explore our collection and find the perfect tech products to suit your needs.</p>
-        <nav>
-          <ul>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Register</a></li>
-            <li><a href="/laptop">Laptop</a></li>
-            <li><a href="/cart">Cart</a></li>
-            <li><a href="/checkout">Checkout</a></li>
-            <li><a href="/orders">Orders</a></li>
-            <li><a href="/admin">Admin</a></li>
-          </ul>
-        </nav>
-      </div>
-    </BrowserRouter>
+    <GoogleAuthProvider>
+      <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/laptop" element={<Laptop />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+        {/* <div className="App">
+          <h1>TechPod</h1>
+          <p>Welcome to TechPod, your one-stop shop for all things tech! We offer a wide range of laptops, accessories, and more. Whether you're a student, a professional, or just a tech enthusiast, we've got something for everyone. Explore our collection and find the perfect tech products to suit your needs.</p>
+          <nav>
+            <ul>
+              <li><a href="/login">Login</a></li>
+              <li><a href="/register">Register</a></li>
+              <li><a href="/laptop">Laptop</a></li>
+              <li><a href="/cart">Cart</a></li>
+              <li><a href="/checkout">Checkout</a></li>
+              <li><a href="/orders">Orders</a></li>
+              <li><a href="/admin">Admin</a></li>
+            </ul>
+          </nav>
+        </div> */}
+      </BrowserRouter>
+    </GoogleAuthProvider>
   )
 }
 
