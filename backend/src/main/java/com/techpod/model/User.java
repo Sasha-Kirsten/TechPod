@@ -1,11 +1,6 @@
 package com.techpod.model;
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -18,6 +13,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String firstName;
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -31,9 +28,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    // @CreationTimestamp
-    // private LocalDateTime createdAt;
 
     @Column(nullable = true)
     private String provider;

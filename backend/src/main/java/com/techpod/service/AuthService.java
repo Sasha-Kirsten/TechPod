@@ -21,11 +21,12 @@ public class AuthService {
     public JwtResponse register(RegisterRequest req) {
         if (userRepository.existsByEmail(req.getEmail()))
             throw new IllegalArgumentException("Email already registered");
-        User user = User.builder()
-                .firstName(req.getFirstName()).lastName(req.getLastName())
-                .email(req.getEmail())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .role(Role.CUSTOMER).build();
+        User user = new User();
+        user.setFirstName(req.getFirstName());
+        user.setLastName(req.getLastName());
+        user.setEmail(req.getEmail());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole(Role.CUSTOMER);
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName());
