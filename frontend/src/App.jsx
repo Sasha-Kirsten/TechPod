@@ -8,10 +8,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function login(){
   // return <h1>Login</h1>;
-  const handleGoogleLogin = () => {
-    const provider = new GoogleAuthProvider();
-    // Implement the logic to sign in with Google using Firebase Authentication
-  }
+  // const handleGoogleLogin = () => {
+  //   const provider = new GoogleAuthProvider();
+  //   // Implement the logic to sign in with Google using Firebase Authentication
+  // }
 
   const handleSubmit = async(event) => {
     event.preventDefault();
@@ -43,6 +43,63 @@ function login(){
   </section>
   )
 }
+
+
+describe('Login Component', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.restoreAllMocks()
+  })
+
+  it('renders the login form correctly', () => {
+    render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    expect(screen.getByText('Login Page')).toBeInTheDocument()
+    expect(screen.getByLabelText('Username:')).toBeInTheDocument()
+    expect(screen.getByLabelText('Password:')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
+  })
+
+  it('submits credentials and stores token in localStorage', async () => {
+    const mockToken = 'mock-jwt-token-123'
+
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({ token: mockToken }),
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    fireEvent.change(screen.getByLabelText('Username:'), {
+      target: { value: 'testuser@example.com' },
+    })
+    fireEvent.change(screen.getByLabelText('Password:'), {
+      target: { value: 'password123' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Login' }))
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'testuser@example.com', password: 'password123' }),
+      })
+      expect(localStorage.getItem('token')).toBe(mockToken)
+    })
+  })
+})
+
 
 function register(){
   // return <h1>Register</h1>;

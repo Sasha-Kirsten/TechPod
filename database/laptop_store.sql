@@ -1,22 +1,21 @@
--- TechPod Database — run this after Spring Boot creates the tables
-CREATE DATABASE IF NOT EXISTS techpod;
-USE techpod;
+CREATE DATABASE IF NOT EXISTS laptops_store;
+USE laptops_store;
 
-
--- Seed: Admin (password = admin123)
--- INSERT IGNORE INTO users (first_name, last_name, email, password, role, created_at)
--- VALUES ('Admin', 'TechPod', 'admin@techpod.com',
---         '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LjTsyXwT8Z6', 'ADMIN', NOW());
-
--- Seed: Dispatcher (password = admin123)
--- INSERT IGNORE INTO users (first_name, last_name, email, password, role, created_at)
--- VALUES ('Dispatch', 'Manager', 'dispatch@techpod.com',
---         '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LjTsyXwT8Z6', 'DISPATCHER', NOW());
-
--- Seed: Sample customers (password = customer123)
--- INSERT IGNORE INTO users (first_name, last_name, email, password, role, created_at) 
--- VALUES('Alice', 'Smith', 'alice.smith@techpod.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LjTsyXwT8Z6', 'CUSTOMER', NOW()),
---         ('Bob', 'Johnson', 'bob.johnson@techpod.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LjTsyXwT8Z6', 'CUSTOMER', NOW());
+CREATE TABLE IF NOT EXISTS laptops (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    brand VARCHAR(50) NOT NULL,
+    model VARCHAR(100) NOT NULL,
+    processor VARCHAR(100) NOT NULL,
+    ram_gb INT NOT NULL,
+    storage VARCHAR(50) NOT NULL,
+    gpu VARCHAR(100) NOT NULL,
+    screen_size_inch DECIMAL(4,1) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    stock_quantity INT NOT NULL,
+    image_url VARCHAR(255),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Seed: Sample laptops
 INSERT IGNORE INTO laptops (brand, model, processor, ram_gb, storage, gpu, screen_size_inch, price, stock_quantity, image_url, description, created_at) VALUES
@@ -28,4 +27,4 @@ INSERT IGNORE INTO laptops (brand, model, processor, ram_gb, storage, gpu, scree
 ('Lenovo', 'Legion 5 Pro', 'AMD Ryzen 7 7745HX', 32, '1TB SSD', 'NVIDIA RTX 4070', 16.0, 1599.99, 18, 'https://p3-ofp.static.pub/fes/cms/2022/09/08/ofp.pictures.lenovo.com/p430-ideapad-5-14-intel-gallery-1.png', 'Dominate every game with RTX 4070 graphics.', NOW()),
 ('HP', 'Spectre x360 14"', 'Intel Core i7-1355U', 16, '1TB SSD', 'Intel Iris Xe', 14.0, 1399.99, 22, 'https://ssl-product-images.www8-hp.com/digmedialib/prodimg/knightley/c08233956.png', 'Premium 2-in-1 convertible with OLED display.', NOW()),
 ('ASUS', 'ROG Zephyrus G14', 'AMD Ryzen 9 7940HS', 32, '1TB SSD', 'NVIDIA RTX 4090', 14.0, 2499.99, 10, 'https://dlcdnwebimgs.asus.com/gain/a9cf2b34-a2fe-44dc-9dcf-29960a380caf/w717/h525', 'The ultimate compact gaming powerhouse.', NOW()),
-('Microsoft', 'Surface Laptop 5', 'Intel Core i5-1245U', 8, '512GB SSD', 'Intel Iris Xe', 13.5, 1099.99, 35, 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4OXiR', 'Sleek and fast. Runs Windows 11 beautifully.', NOW());
+('Microsoft', 'Surface Laptop 5', 'Intel Core i5-1245U', 8, '512GB SSD', 'Intel Iris Xe', 13.5, 1099.99, 35, 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4OXiR', 'Sleek and fast. Runs Windows 11 beautifully.', NOW()); 
