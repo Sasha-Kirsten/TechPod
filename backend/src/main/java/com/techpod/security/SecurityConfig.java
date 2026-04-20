@@ -1,5 +1,4 @@
 package com.techpod.security;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
@@ -34,14 +33,15 @@ import org.springframework.web.filter.OncePerRequestFilter;import java.io.IOExce
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final OAuth2SuccessHandler OAuth2SuccessHandler;
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // .cors(c -> c.configurationSource(corsConfigurationSource()))
-            // .csrf(csrf -> csrf.disable())
-            // .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .cors(c -> c.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/laptops/**").permitAll()
@@ -49,8 +49,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/dispatch/**").hasAnyRole("ADMIN", "DISPATCHER")
                 .anyRequest().authenticated()
             )
-            .oauth2Login(Customizer.withDefaults());
-            // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .oauth2Login(oauth -> oauth
+                .successHandler(OAuth2SuccessHandler)
+            )
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -74,40 +76,34 @@ public class SecurityConfig {
         return source;
     }
     // @Bean
-    public class OAuth_LoginSuccessHandler extends OncePerRequestFilter {
-        private final UserDetailsService userDetailsService;
-        private final JwtUtil jwtUtil;
-        public OAuth_LoginSuccessHandler(UserDetailsService userDetailsService, JwtUtil jwtUtil){
-            this.userDetailsService = userDetailsService;
-            this.jwtUtil = jwtUtil;
-        }
+    // public class OAuth_LoginSuccessHandler extends OncePerRequestFilter {
+    //     private final UserDetailsService userDetailsService;
+    //     private final JwtUtil jwtUtil;
+    //     public OAuth_LoginSuccessHandler(UserDetailsService userDetailsService, JwtUtil jwtUtil){
+    //         this.userDetailsService = userDetailsService;
+    //         this.jwtUtil = jwtUtil;
+    //     }
 
-        @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-            // Implement your OAuth login success handling logic here
-            final String authrizationHeader = request.getHeader("Authorization");
-            String username = null;
-            String jwt = null;
-            if (authrizationHeader != null && authrizationHeader.startsWith("Bearer ")) {
-                jwt = authrizationHeader.substring(7);
-                username = jwtUtil.extractUsername(jwt);
-            }
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.validateToken(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            }
-
-
-
-
-
-
-            filterChain.doFilter(request, response);
-        }
-    }
+        // @Override
+        // protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //     // Implement your OAuth login success handling logic here
+        //     final String authrizationHeader = request.getHeader("Authorization");
+        //     String username = null;
+        //     String jwt = null;
+        //     if (authrizationHeader != null && authrizationHeader.startsWith("Bearer ")) {
+        //         jwt = authrizationHeader.substring(7);
+        //         username = jwtUtil.extractUsername(jwt);
+        //     }
+        //     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        //         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        //         if (jwtUtil.validateToken(jwt, userDetails)) {
+        //             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        //                     userDetails, null, userDetails.getAuthorities());
+        //             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        //             SecurityContextHolder.getContext().setAuthentication(authToken);
+        //         }
+        //     }
+        //     filterChain.doFilter(request, response);
+        // }
+    // }
 }
