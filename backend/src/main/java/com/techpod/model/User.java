@@ -19,23 +19,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
-
-    @Email
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank
+    @Column(nullable = true)
     private String password;
+
+    @Column(nullable = true)
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    // @CreationTimestamp
+    // private LocalDateTime createdAt;
+
+    @Column(nullable = true)
+    private String provider;
+
 }

@@ -12,21 +12,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.Customizer;
+// import org.springframework.security.config.Customizer;
 import org.springframework.web.cors.*;
 import java.util.List;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+// import jakarta.servlet.FilterChain;
+// import jakarta.servlet.ServletException;
+// import jakarta.servlet.http.HttpServletRequest;
+// import jakarta.servlet.http.HttpServletResponse;
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.core.context.SecurityContextHolder;
+// import org.springframework.security.core.userdetails.UserDetails;
+// import org.springframework.security.core.userdetails.UserDetailsService;
+// import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;import java.io.IOException;@Component
-
+// import org.springframework.web.filter.OncePerRequestFilter;
+// import java.io.IOException;
+@Component
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -36,18 +37,39 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler OAuth2SuccessHandler;
     private final JwtAuthFilter jwtAuthFilter;
 
-    @Bean
+    // @Bean
+    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .cors(c -> c.configurationSource(corsConfigurationSource()))
+    //         .csrf(csrf -> csrf.disable())
+    //         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    //         .authorizeHttpRequests(auth -> auth
+    //             .requestMatchers("/api/auth/**").permitAll()
+    //             .requestMatchers(HttpMethod.GET, "/api/laptops/**").permitAll()
+    //             .requestMatchers("/api/admin/**").hasRole("ADMIN")
+    //             .requestMatchers("/api/dispatch/**").hasAnyRole("ADMIN", "DISPATCHER")
+    //             .anyRequest().authenticated()
+    //         )
+    //         .oauth2Login(oauth -> oauth
+    //             .successHandler(OAuth2SuccessHandler)
+    //         )
+    //         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    //     return http.build();
+    // }
+
+    @Bean 
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(c -> c.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/laptops/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/dispatch/**").hasAnyRole("ADMIN", "DISPATCHER")
-                .anyRequest().authenticated()
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/oauth2/**",
+                    "/login/oauth2/**").permitAll()
+                    .requestMatchers("/api/laptops/**").permitAll()
+                    .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth
                 .successHandler(OAuth2SuccessHandler)

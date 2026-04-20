@@ -3,5 +3,6 @@ package com.techpod.model;
 public enum Role {
     CUSTOMER,
     ADMIN,
-    DISPATCHER
+    DISPATCHER, 
+    USER
 }
