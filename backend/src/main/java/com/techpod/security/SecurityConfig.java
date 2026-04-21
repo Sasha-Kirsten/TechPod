@@ -64,4 +64,10 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
+
+    // GDPR: Ensure all endpoints use HTTPS in production (enforce in config/infra)
+    // GDPR: TODO: Add audit logging for login attempts, data access, and data exports
+    // GDPR: TODO: Set JWT expiry to short duration (e.g., 15 min) — minimizes breach risk
+    // GDPR: TODO: Implement refresh token rotation
 }

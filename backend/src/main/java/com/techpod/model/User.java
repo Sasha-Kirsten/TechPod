@@ -1,7 +1,10 @@
 package com.techpod.model;
+import java.time.LocalDateTime;
+
+import org.springframework.cglib.core.Local;
+
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Table(name = "users")
 @Data
@@ -31,5 +34,15 @@ public class User {
 
     @Column(nullable = true)
     private String provider;
+
+    private boolean marketingConsent;
+
+    private LocalDateTime consentTimestamp;
+
+    private boolean anonymized;
+
+    private LocalDateTime anonymizedAt;
+
+    private LocalDateTime dataRetentionExpiry;
 
 }

@@ -1,8 +1,6 @@
 package com.techpod.model;
-
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Table(name = "cart_items",
        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "laptop_id"}))

@@ -1,5 +1,4 @@
 package com.techpod;
-
 import com.techpod.dto.LaptopRequest;
 import com.techpod.service.LaptopService;
 import com.techpod.exception.ResourceNotFoundException;
@@ -11,11 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

@@ -1,5 +1,4 @@
 package com.techpod.model;
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;

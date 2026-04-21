@@ -1,5 +1,4 @@
 package com.techpod.repository;
-
 import com.techpod.model.CartItem;
 import com.techpod.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

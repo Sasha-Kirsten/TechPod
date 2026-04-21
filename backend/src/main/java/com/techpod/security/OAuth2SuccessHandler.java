@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import java.io.IOException;
-
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
