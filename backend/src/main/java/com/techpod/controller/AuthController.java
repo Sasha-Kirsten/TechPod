@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import com.techpod.repository.UserRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,4 +30,19 @@ public class AuthController {
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
         return ResponseEntity.ok(authService.login(req));
     }
+//  NEED TO WORK ON THIS ENDPOINT TO RETURN THE CORRECT RESPONSE
+    @GetMapping("/me/data-expert")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteAccount(@RequestParam String email) {
+        if (!userRepository.existsByEmail(email)) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+        userRepository.deleteByEmail(email);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
 }

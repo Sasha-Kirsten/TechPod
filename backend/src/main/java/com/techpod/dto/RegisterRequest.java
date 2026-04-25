@@ -17,4 +17,16 @@ public class RegisterRequest {
     public void setMarketingConsent(boolean marketingConsent) {
         this.marketingConsent = marketingConsent;
     }
+
+    public boolean privacyPolicyAccepted() {
+        return true; // Always return true since we are not storing this field
+    }
+    public void setPrivacyPolicyAccepted(boolean accepted) {
+        // No-op since we are not storing this field
+    }
+
+    public String privacyPolicyVersion() {
+        return "1.0"; // Return a fixed version since we are not storing this field
+    }
+    
 }

@@ -4,20 +4,36 @@ import com.techpod.dto.CheckoutRequest;
 import com.techpod.exception.ResourceNotFoundException;
 import com.techpod.model.*;
 import com.techpod.repository.*;
+import com.techpod.websocket.OrderStatusPayload;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 @Service
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CartItemRepository cartItemRepository;
     private final LaptopRepository laptopRepository;
     private final UserRepository userRepository;
+
+    private final SimpMessagingTemplate messagingTemplate; // For WebSocket notifications
+
+    // private final OrderStatusPayload orderStatusPayload;
+
+    public OrderService(OrderRepository orderRepository, CartItemRepository cartItemRepository, LaptopRepository laptopRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
+        this.orderRepository = orderRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.laptopRepository = laptopRepository;
+        this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
+    }
+
 
     private User getUser(String email) {
         return userRepository.findByEmail(email)
@@ -61,6 +77,15 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
         order.setStatus(status);
-        return orderRepository.save(order);
+        Order saved = orderRepository.save(order);
+        messagingTemplate.convertAndSend("/topic/orders/" + saved.getUser().getId(),
+            new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order status updated.")
+        );
+        return saved;
+
+        // Order order = orderRepository.findById(id)
+        //         .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+        // order.setStatus(status);
+        // return orderRepository.save(order);
     }
 }

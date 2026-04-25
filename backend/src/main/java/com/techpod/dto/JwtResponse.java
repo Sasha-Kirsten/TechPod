@@ -1,5 +1,7 @@
 package com.techpod.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,4 +12,5 @@ public class JwtResponse {
     private String email;
     private String role;
     private String firstName;
+    private LocalDateTime consentTimestamp;
 }

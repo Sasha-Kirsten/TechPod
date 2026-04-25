@@ -21,11 +21,16 @@ public class AuthService {
 
     public JwtResponse register(RegisterRequest req) {
         if (!req.isPrivacyConsent()) {
-            throw new IllegalArgumentException("Privacy consent is required for registration");
+            // throw new IllegalArgumentException("Privacy consent is required for registration");
+            LocalDateTime timestamp = userRepository.findDataRetentionStarTimemp(LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC));
+            // LocalDateTime timestamp = LocalDateTime.now();
+            return new JwtResponse(null, null, null, null, timestamp); // Return empty response if privacy consent is not given
         }
+        
         if (userRepository.existsByEmail(req.getEmail())) {
             throw new IllegalArgumentException("Email already registered");
         }
+        
         User user = new User();
         user.setFirstName(req.getFirstName());
         user.setLastName(req.getLastName());
@@ -36,14 +41,14 @@ public class AuthService {
         user.setConsentTimestamp(LocalDateTime.now());
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName());
+        return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName(), user.getConsentTimestamp());
     }
 
     public JwtResponse login(LoginRequest req) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
         User user = userRepository.findByEmail(req.getEmail()).orElseThrow();
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName());
+        return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName(), user.getConsentTimestamp());
     }
 
     // public void register(RegisterRequest request){

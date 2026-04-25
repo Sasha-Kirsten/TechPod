@@ -36,6 +36,7 @@ public class SecurityConfig {
                     "/oauth2/**",
                     "/login/oauth2/**").permitAll()
                     .requestMatchers("/api/laptops/**").permitAll()
+                    .requestMatchers("/ws/**").permitAll() // Allow WebSocket endpoints without authentication
                     .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth

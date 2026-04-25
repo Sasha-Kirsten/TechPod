@@ -1,5 +1,9 @@
 package com.techpod.repository;
 import com.techpod.model.User;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +30,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
            "WHERE u.id = :userId")
     void anonymizeUser(@Param("userId") Long userId);
     List <User> findByDataRetentionExpiryBefore(LocalDateTime date);
+    LocalDateTime findDataRetentionExpiryById(Long id);
+    LocalDateTime findDataRetentionStarTimemp(Long timeLong);
+
+    @Transactional
+    void deleteByEmail(String email);
+
+//     repository/UserRepository.java
+//     Must have:
+//          Anonymization update/query method (right to erasure)
+//          Finder for expired retention (...Before(now))
+
+
+
 }
