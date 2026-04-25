@@ -64,6 +64,9 @@ public class OrderService {
         order.setTotalAmount(total);
         Order saved = orderRepository.save(order);
         cartItemRepository.deleteByUser(user);
+        messagingTemplate.convertAndSend("/topic/admin/orders/" + saved.getUser().getId(),
+            new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order status updated.")
+        );
         return saved;
     }
 
@@ -81,6 +84,11 @@ public class OrderService {
         messagingTemplate.convertAndSend("/topic/orders/" + saved.getUser().getId(),
             new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order status updated.")
         );
+
+        messagingTemplate.convertAndSend("/topic/admin/orders/" + saved.getUser().getId(),
+            new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order status updated.")
+        );
+
         return saved;
 
         // Order order = orderRepository.findById(id)
@@ -88,4 +96,7 @@ public class OrderService {
         // order.setStatus(status);
         // return orderRepository.save(order);
     }
+
+
+
 }

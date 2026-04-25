@@ -5,6 +5,9 @@ import com.techpod.exception.ResourceNotFoundException;
 import com.techpod.model.Laptop;
 import com.techpod.repository.LaptopRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Simple;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.List;
 public class LaptopService {
 
     private final LaptopRepository laptopRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public List<Laptop> getAll() { return laptopRepository.findAll(); }
 
@@ -42,6 +46,16 @@ public class LaptopService {
         l.setScreenSizeInch(r.getScreenSizeInch()); l.setPrice(r.getPrice());
         l.setStockQuantity(r.getStockQuantity()); l.setImageUrl(r.getImageUrl());
         l.setDescription(r.getDescription());
+        return laptopRepository.save(l);
+    }
+
+    public Laptop stockLow(Long id, LaptopRequest r) {
+        Laptop l = getById(id);
+        l.setStockQuantity(r.getStockQuantity());
+        if (l.getStockQuantity() < 5) {
+            // Trigger low stock alert (e.g., send email to admin)
+            messagingTemplate.convertAndSend("/topic/stock/" + l.getId(), "Low stock alert for " + l.getBrand() + " " + l.getModel() + ": only " + l.getStockQuantity() + " left!");
+        }
         return laptopRepository.save(l);
     }
 
