@@ -64,8 +64,11 @@ public class OrderService {
         order.setTotalAmount(total);
         Order saved = orderRepository.save(order);
         cartItemRepository.deleteByUser(user);
-        messagingTemplate.convertAndSend("/topic/admin/orders/" + saved.getUser().getId(),
-            new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order status updated.")
+        // messagingTemplate.convertAndSend("/topic/admin/orders/" + saved.getUser().getId(),
+        //     new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order status updated.")
+        // );
+        messagingTemplate.convertAndSend("/topic/orders/" + saved.getUser().getId(),
+            new OrderStatusPayload(saved.getId(), saved.getStatus(), "Order placed successfully.")
         );
         return saved;
     }

@@ -6,7 +6,7 @@ import com.techpod.model.Laptop;
 import com.techpod.repository.LaptopRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Simple;
+// import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Simple;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -55,6 +55,7 @@ public class LaptopService {
         if (l.getStockQuantity() < 5) {
             // Trigger low stock alert (e.g., send email to admin)
             messagingTemplate.convertAndSend("/topic/stock/" + l.getId(), "Low stock alert for " + l.getBrand() + " " + l.getModel() + ": only " + l.getStockQuantity() + " left!");
+            messagingTemplate.convertAndSend("/topic/admin/stock/" + l.getId(), "Low stock alert for " + l.getBrand() + " " + l.getModel() + ": only " + l.getStockQuantity() + " left!");
         }
         return laptopRepository.save(l);
     }
