@@ -1,20 +1,10 @@
 import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from './assets/vite.svg'
-// import heroImg from './assets/hero.png'
 import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-// import { GoogleAuthProvider } from 'firebase/auth/web-extension'
 import { connectWebSocket } from "./services/websocket";
-// frontend/src/services/websocket.jsx
 import { useEffect } from "react";
 
 function Login(){
-  // return <h1>Login</h1>;
-  // const handleGoogleLogin = () => {
-  //   const provider = new GoogleAuthProvider();
-  //   // Implement the logic to sign in with Google using Firebase Authentication
-  // }
 
   const handleSubmit = async(event) => {
     event.preventDefault();
@@ -49,65 +39,7 @@ function Login(){
   )
 }
 
-
-// describe('Login Component', () => {
-//   beforeEach(() => {
-//     localStorage.clear()
-//     vi.restoreAllMocks()
-//   })
-
-//   it('renders the login form correctly', () => {
-//     render(
-//       <MemoryRouter initialEntries={['/login']}>
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//         </Routes>
-//       </MemoryRouter>
-//     )
-
-//     expect(screen.getByText('Login Page')).toBeInTheDocument()
-//     expect(screen.getByLabelText('Username:')).toBeInTheDocument()
-//     expect(screen.getByLabelText('Password:')).toBeInTheDocument()
-//     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
-//   })
-
-//   it('submits credentials and stores token in localStorage', async () => {
-//     const mockToken = 'mock-jwt-token-123'
-
-//     global.fetch = vi.fn().mockResolvedValue({
-//       json: vi.fn().mockResolvedValue({ token: mockToken }),
-//     })
-
-//     render(
-//       <MemoryRouter initialEntries={['/login']}>
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//         </Routes>
-//       </MemoryRouter>
-//     )
-
-//     fireEvent.change(screen.getByLabelText('Username:'), {
-//       target: { value: 'testuser@example.com' },
-//     })
-//     fireEvent.change(screen.getByLabelText('Password:'), {
-//       target: { value: 'password123' },
-//     })
-//     fireEvent.click(screen.getByRole('button', { name: 'Login' }))
-
-//     await waitFor(() => {
-//       expect(global.fetch).toHaveBeenCalledWith('/api/login', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ email: 'testuser@example.com', password: 'password123' }),
-//       })
-//       expect(localStorage.getItem('token')).toBe(mockToken)
-//     })
-//   })
-// })
-
-
 function Register(){
-  // return <h1>Register</h1>;
   return (
     <section id="center">
       <div>
@@ -128,7 +60,6 @@ function Register(){
 }
 
 function Laptop(){
-  // return <h1>Laptop</h1>;
   return (
     <section id="center">
       <div>
@@ -141,7 +72,6 @@ function Laptop(){
 }
 
 function Cart(){
-  // return <h1>Cart</h1>;
   return (
     <section id="center">
       <div>
@@ -154,7 +84,6 @@ function Cart(){
 }
 
 function Checkout(){
-  // return <h1>Checkout</h1>;
   return (
     <section id="center">
       <div>
@@ -167,7 +96,6 @@ function Checkout(){
 }
 
 function Orders(){
-  // return <h1>Orders</h1>;
   return (
     <section id="center">
       <div>
@@ -209,21 +137,6 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
-        {/* <div className="App">
-          <h1>TechPod</h1>
-          <p>Welcome to TechPod, your one-stop shop for all things tech! We offer a wide range of laptops, accessories, and more. Whether you're a student, a professional, or just a tech enthusiast, we've got something for everyone. Explore our collection and find the perfect tech products to suit your needs.</p>
-          <nav>
-            <ul>
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Register</a></li>
-              <li><a href="/laptop">Laptop</a></li>
-              <li><a href="/cart">Cart</a></li>
-              <li><a href="/checkout">Checkout</a></li>
-              <li><a href="/orders">Orders</a></li>
-              <li><a href="/admin">Admin</a></li>
-            </ul>
-          </nav>
-        </div> */}
       </BrowserRouter>
   )
 }
