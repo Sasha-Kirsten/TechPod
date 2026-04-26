@@ -24,27 +24,27 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler OAuth2SuccessHandler;
     private final JwtAuthFilter jwtAuthFilter;
 
-    @Bean 
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(c -> c.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/oauth2/**",
-                    "/login/oauth2/**").permitAll()
-                    .requestMatchers("/api/laptops/**").permitAll()
-                    .requestMatchers("/ws/**").permitAll() // Allow WebSocket endpoints without authentication
-                    .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth -> oauth
-                .successHandler(OAuth2SuccessHandler)
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+    // @Bean 
+    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .cors(c -> c.configurationSource(corsConfigurationSource()))
+    //         .csrf(csrf -> csrf.disable())
+    //         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    //         .authorizeHttpRequests(auth -> auth
+    //             .requestMatchers(
+    //                 "/api/auth/**",
+    //                 "/oauth2/**",
+    //                 "/login/oauth2/**").permitAll()
+    //                 .requestMatchers("/api/laptops/**").permitAll()
+    //                 .requestMatchers("/ws/**").permitAll() // Allow WebSocket endpoints without authentication
+    //                 .anyRequest().authenticated()
+    //         )
+    //         .oauth2Login(oauth -> oauth
+    //             .successHandler(OAuth2SuccessHandler)
+    //         )
+    //         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    //     return http.build();
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }

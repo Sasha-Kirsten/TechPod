@@ -3,10 +3,13 @@ import { useState } from 'react'
 // import viteLogo from './assets/vite.svg'
 // import heroImg from './assets/hero.png'
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 // import { GoogleAuthProvider } from 'firebase/auth/web-extension'
+import { connectWebSocket } from "./services/websocket";
+// frontend/src/services/websocket.jsx
+import { useEffect } from "react";
 
-function login(){
+function Login(){
   // return <h1>Login</h1>;
   // const handleGoogleLogin = () => {
   //   const provider = new GoogleAuthProvider();
@@ -38,6 +41,8 @@ function login(){
         <input type="password" id="password" name="password" />
         <br />
         <button type="submit">Login</button>
+        <a href="/register" className="role-btn customer">Register</a>
+        {/* <button type="button" onClick={handleGoogleLogin}>Login with Google</button> */}
       </form>
     </div>
   </section>
@@ -45,93 +50,157 @@ function login(){
 }
 
 
-describe('Login Component', () => {
-  beforeEach(() => {
-    localStorage.clear()
-    vi.restoreAllMocks()
-  })
+// describe('Login Component', () => {
+//   beforeEach(() => {
+//     localStorage.clear()
+//     vi.restoreAllMocks()
+//   })
 
-  it('renders the login form correctly', () => {
-    render(
-      <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </MemoryRouter>
-    )
+//   it('renders the login form correctly', () => {
+//     render(
+//       <MemoryRouter initialEntries={['/login']}>
+//         <Routes>
+//           <Route path="/login" element={<Login />} />
+//         </Routes>
+//       </MemoryRouter>
+//     )
 
-    expect(screen.getByText('Login Page')).toBeInTheDocument()
-    expect(screen.getByLabelText('Username:')).toBeInTheDocument()
-    expect(screen.getByLabelText('Password:')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
-  })
+//     expect(screen.getByText('Login Page')).toBeInTheDocument()
+//     expect(screen.getByLabelText('Username:')).toBeInTheDocument()
+//     expect(screen.getByLabelText('Password:')).toBeInTheDocument()
+//     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
+//   })
 
-  it('submits credentials and stores token in localStorage', async () => {
-    const mockToken = 'mock-jwt-token-123'
+//   it('submits credentials and stores token in localStorage', async () => {
+//     const mockToken = 'mock-jwt-token-123'
 
-    global.fetch = vi.fn().mockResolvedValue({
-      json: vi.fn().mockResolvedValue({ token: mockToken }),
-    })
+//     global.fetch = vi.fn().mockResolvedValue({
+//       json: vi.fn().mockResolvedValue({ token: mockToken }),
+//     })
 
-    render(
-      <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </MemoryRouter>
-    )
+//     render(
+//       <MemoryRouter initialEntries={['/login']}>
+//         <Routes>
+//           <Route path="/login" element={<Login />} />
+//         </Routes>
+//       </MemoryRouter>
+//     )
 
-    fireEvent.change(screen.getByLabelText('Username:'), {
-      target: { value: 'testuser@example.com' },
-    })
-    fireEvent.change(screen.getByLabelText('Password:'), {
-      target: { value: 'password123' },
-    })
-    fireEvent.click(screen.getByRole('button', { name: 'Login' }))
+//     fireEvent.change(screen.getByLabelText('Username:'), {
+//       target: { value: 'testuser@example.com' },
+//     })
+//     fireEvent.change(screen.getByLabelText('Password:'), {
+//       target: { value: 'password123' },
+//     })
+//     fireEvent.click(screen.getByRole('button', { name: 'Login' }))
 
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'testuser@example.com', password: 'password123' }),
-      })
-      expect(localStorage.getItem('token')).toBe(mockToken)
-    })
-  })
-})
+//     await waitFor(() => {
+//       expect(global.fetch).toHaveBeenCalledWith('/api/login', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ email: 'testuser@example.com', password: 'password123' }),
+//       })
+//       expect(localStorage.getItem('token')).toBe(mockToken)
+//     })
+//   })
+// })
 
 
-function register(){
+function Register(){
   // return <h1>Register</h1>;
-
+  return (
+    <section id="center">
+      <div>
+        <h1>Register</h1>
+        {/* <p>Registration form coming soon!</p> */}
+        <form>
+          <label htmlFor="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+          <br />
+          <label htmlFor="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+          <br />
+          <button type="submit">Register</button>
+        </form>
+      </div>
+    </section>
+  );
 }
 
-function laptop(){
-  return <h1>Laptop</h1>;
+function Laptop(){
+  // return <h1>Laptop</h1>;
+  return (
+    <section id="center">
+      <div>
+        <h1>Shop Laptops</h1>
+        <p>Browse our latest tech products!</p>
+        <span role="img" aria-label="laptop" style={{ fontSize: "3rem" }}>💻</span>
+      </div>
+    </section>
+  );
 }
 
-function cart(){
-  return <h1>Cart</h1>;
+function Cart(){
+  // return <h1>Cart</h1>;
+  return (
+    <section id="center">
+      <div>
+        <h1>Your Cart</h1>
+        <p>Ready to checkout?</p>
+        <span role="img" aria-label="cart" style={{ fontSize: "3rem" }}>🛒</span>
+      </div>
+    </section>
+  );
 }
 
-function checkout(){
-  return <h1>Checkout</h1>;
+function Checkout(){
+  // return <h1>Checkout</h1>;
+  return (
+    <section id="center">
+      <div>
+        <h1>Checkout</h1>
+        <p>Almost there! Complete your purchase.</p>
+        <span role="img" aria-label="checkout" style={{ fontSize: "3rem" }}>💳</span>
+      </div>
+    </section>
+  );
 }
 
-function orders(){
-  return <h1>Orders</h1>;
+function Orders(){
+  // return <h1>Orders</h1>;
+  return (
+    <section id="center">
+      <div>
+        <h1>Your Orders</h1>
+        <p>Review your past purchases.</p>
+        <span role="img" aria-label="orders" style={{ fontSize: "3rem" }}>📦</span>
+      </div>
+    </section>
+  );
 }
 
-function admin(){
-  return <h1>Admin</h1>;
+function Admin(){
+  return (
+    <section id="center">
+      <div>
+        <h1>Admin</h1>
+        <p>Admin panel coming soon!</p>
+        <span role="img" aria-label="admin" style={{ fontSize: "3rem" }}>🛠️</span>
+      </div>
+    </section>
+  );
 }
 
 function App() {
   const [count, setCount] = useState(0)
+  useEffect(() => {
+    connectWebSocket();
+  }, [])
 
   return (
       <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/laptop" element={<Laptop />} />

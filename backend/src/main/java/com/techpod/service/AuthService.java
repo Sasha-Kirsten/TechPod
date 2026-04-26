@@ -22,7 +22,7 @@ public class AuthService {
     public JwtResponse register(RegisterRequest req) {
         if (!req.isPrivacyConsent()) {
             // throw new IllegalArgumentException("Privacy consent is required for registration");
-            LocalDateTime timestamp = userRepository.findDataRetentionStarTimemp(LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC));
+            LocalDateTime timestamp = userRepository.findDataRetentionStartTimeById(LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC));
             // LocalDateTime timestamp = LocalDateTime.now();
             return new JwtResponse(null, null, null, null, timestamp); // Return empty response if privacy consent is not given
         }
@@ -46,7 +46,7 @@ public class AuthService {
 
     public JwtResponse login(LoginRequest req) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
-        User user = userRepository.findByEmail(req.getEmail()).orElseThrow();
+        User user = (User) userRepository.findByEmail(req.getEmail());
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName(), user.getConsentTimestamp());
     }

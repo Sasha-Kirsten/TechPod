@@ -17,8 +17,7 @@ public class CartService {
     private final UserRepository userRepository;
 
     private User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return (User) userRepository.findByEmail(email);
     }
 
     public List<CartItem> getCart(String email) {

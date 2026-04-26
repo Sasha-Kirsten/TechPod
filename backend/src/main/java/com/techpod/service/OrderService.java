@@ -36,8 +36,7 @@ public class OrderService {
 
 
     private User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return (User) userRepository.findByEmail(email);
     }
 
     @Transactional

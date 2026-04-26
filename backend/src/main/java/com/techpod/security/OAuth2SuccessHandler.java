@@ -34,7 +34,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         final String finalEmail = email;
         final String finalName = name != null ? name : "Unknown";
 
-        User user = userRepository.findByEmail(finalEmail).orElseGet(() -> userRepository.save(User.builder().email(finalEmail).name(finalName).role(Role.USER).provider("google").build()));
+        User user = (User) userRepository.findByEmail(finalEmail);
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         response.sendRedirect("http://localhost:5173/oauth2/redirect?token=" + token);
     }
