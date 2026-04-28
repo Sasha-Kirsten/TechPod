@@ -12,16 +12,14 @@ public class WebSocket implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
+        config.enableSimpleBroker("/topic"); // Message broker for subscriptions
+        config.setApplicationDestinationPrefixes("/app"); // Prefix for client messages
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Websocket handshake endpoint, clients will connect to this URL to establish the websocket connection
-        registry.addEndpoint("/ws")
-        .setAllowedOrigins("*")
-        .withSockJS(); // fallback for browsers that don't support WebSockets
+        registry.addEndpoint("/ws") // WebSocket endpoint
+                .setAllowedOrigins("http://localhost:5173") // Allow frontend origin
+                .withSockJS(); // Enable SockJS fallback
     }
-    
 }

@@ -3,22 +3,25 @@ import com.techpod.dto.*;
 import com.techpod.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import com.techpod.repository.UserRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/api/auth")
+// @RequestMapping("/api/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-    private final UserRepository userRepository;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest req) {
@@ -27,14 +30,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
-        return ResponseEntity.ok(authService.login(req));
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
+        JwtResponse entity = authService.login(loginRequest);
+        return ResponseEntity.ok(entity);
     }
+
+    // @PostMapping("/login")
+    // public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
+    //     return ResponseEntity.ok(authService.login(req));
+    // }
 //  NEED TO WORK ON THIS ENDPOINT TO RETURN THE CORRECT RESPONSE
-    @GetMapping("/me/data-expert")
-    public String getMethodName(@RequestParam String param) {
-        return new String();
-    }
+    // @GetMapping("/me/data-expert")
+    // public String getMethodName(@RequestParam String param) {
+    //     return new String();
+    // }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAccount(@RequestParam String email) {
