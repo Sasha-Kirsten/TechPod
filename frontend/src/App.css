@@ -182,7 +182,7 @@
   font-weight: 600;
   text-decoration: none;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(160,44,255,0.08);
+  box-shadow: 0 2px 8px rgba(44, 58, 255, 0.08);
 }
 .role-btn.customer {
   background: #fbc2eb;

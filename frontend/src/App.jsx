@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { use, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
 import { connectWebSocket } from "./services/websocket";
 import { useEffect } from "react";
+import DriverMap from './services/DriverMap';
 
 
 function Home() {
@@ -33,14 +34,30 @@ function Login(){
     event.preventDefault();
     const username = event.target.username.value;
     const password = event.target.password.value;
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email: username, password})
-    })
-    const data = await res.json()
-    localStorage.setItem('token', data.token)
-    window.location.href = '/laptop'
+    try{
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email: username, password})
+      })
+      if (!res.ok) {
+        throw new Error('Login failed');
+      }
+      const data = await res.json()
+      localStorage.setItem('token', data.token)
+      window.location.href = '/laptop'
+    } catch (error) {
+      console.error(error);
+      alert('Login failed. Please try again.');
+    }
+    // const res = await fetch('/api/login', {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify({email: username, password})
+    // })
+    // const data = await res.json()
+    // localStorage.setItem('token', data.token)
+    // window.location.href = '/laptop'
   }
   return(
   <section id="center">
@@ -151,14 +168,34 @@ function Orders(){
 }
 
 function Driver(){
+  const [driverLocation, setDriverLocation] = useState({ lat: 37.7749, lng: -122.4194 }); // Example location
+  const [deliveryPoints, setDeliveryPoints] = useState([
+    { lat: 37.7849, lng: -122.4094 },
+    { lat: 37.7649, lng: -122.4294 },
+  ]);
+  useEffect(() => {
+    // Simulate real-time location updates
+    const interval = setInterval(() => {
+      setDriverLocation((prev) => ({
+        lat: prev.lat + (Math.random() - 0.5) * 0.01,
+        lng: prev.lng + (Math.random() - 0.5) * 0.01,
+      }));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <section id="center">
       <div>
         <h1>Delivery Driver Dashboard</h1>
         <p>Track your deliveries and manage your schedule.</p>
         <span role="img" aria-label="driver" style={{ fontSize: "3rem" }}>🚚</span>
+        <DriverMap
+          deliveryPoints={deliveryPoints}
+          driverLocations={[driverLocation]}
+        />
         <div>
           <Link to="/orders" className="role-btn driver">View Orders</Link>
+          <Link to="/delivery-route" className="role-btn driver">View Delivery Route</Link>
           <Link to="/" className="role-btn driver">Back to Home</Link>
         </div>
       </div>
@@ -167,12 +204,56 @@ function Driver(){
 }
 
 function Admin(){
+  const [driverLocations, setDriverLocations] = useState([
+    { lat: 37.7749, lng: -122.4194 }, // Example driver locations
+    { lat: 37.7849, lng: -122.4294 },
+  ]);
+  const [deliveryPoints, setDeliveryPoints] = useState([
+    { lat: 37.7949, lng: -122.4394 },
+    { lat: 37.7649, lng: -122.4094 },
+  ]);
   return (
     <section id="center">
       <div>
         <h1>Admin</h1>
         <p>Admin panel coming soon!</p>
+        <DriverMap
+          deliveryPoints={deliveryPoints}
+          driverLocations={driverLocations}
+        />
         <span role="img" aria-label="admin" style={{ fontSize: "3rem" }}>🛠️</span>
+        <div>
+          <Link to="/orders" className="role-btn driver">View Orders</Link>
+          <Link to="/" className="role-btn driver">Back to Home</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function NotFound() {
+  return (
+    <section id="center">
+      <div>
+        <h1>404 - Not Found</h1>
+        <p>Sorry, the page you're looking for doesn't exist.</p>
+        <span role="img" aria-label="not-found" style={{ fontSize: "3rem" }}>❓</span>
+        <div>
+          <Link to="/" className="role-btn driver">Back to Home</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DeliveryRoute(){
+  return (
+    <section id="center">
+      <div>
+        <h1>Delivery Route</h1>
+        <p>Track your delivery route in real-time.</p>
+        <span role="img" aria-label="route" style={{ fontSize: "3rem" }}>🗺️</span >
+        <h1>MAP!</h1>
         <div>
           <Link to="/orders" className="role-btn driver">View Orders</Link>
           <Link to="/" className="role-btn driver">Back to Home</Link>
@@ -201,6 +282,7 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/driver" element={<Driver />} />
+        <Route path="/delivery-route" element={<DeliveryRoute />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </BrowserRouter>

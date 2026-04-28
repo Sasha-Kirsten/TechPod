@@ -33,6 +33,9 @@
   "dependencies": {
   
     
+  "@react-google-maps/api": "^2.20.8",
+  
+    
   "@react-oauth/google": "^0.13.5",
   
     
@@ -54,7 +57,7 @@
   "sockjs-client": "^1.6.1",
   
     
-  "tailwind": "^4.0.0",
+  "tailwind": "^2.3.1",
   
     
   "tailwindcss": "^4.2.2"

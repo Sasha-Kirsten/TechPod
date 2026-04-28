@@ -35,13 +35,34 @@
 
 
 
+// import { defineConfig } from 'vite'
+// import react from '@vitejs/plugin-react'
+
+// // Polyfill for 'global' in browser
+// export default defineConfig({
+//   plugins: [react()],
+//   define: {
+//     global: 'window',
+//   },
+// })
+
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+// import tailwindcss from "@tailwindcss/vite";
 
-// Polyfill for 'global' in browser
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react() /*, tailwindcss()*/],
   define: {
     global: 'window',
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 })
