@@ -1,8 +1,6 @@
 package com.techpod.model;
 import java.time.LocalDateTime;
 
-// import org.springframework.cglib.core.Local;
-
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -12,30 +10,20 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate the ID
     private Long id;
+
     private String firstName;
     private String lastName;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(nullable = true)
     private String password;
-
-    @Column(nullable = true)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = true)
     private String provider;
-
-    // private boolean marketingConsent;
 
     private LocalDateTime consentTimestamp;
 

@@ -4,7 +4,6 @@ import com.techpod.model.*;
 import com.techpod.repository.UserRepository;
 import com.techpod.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.*;
@@ -21,9 +20,7 @@ public class AuthService {
 
     public JwtResponse register(RegisterRequest req) {
         if (!req.isPrivacyConsent()) {
-            // throw new IllegalArgumentException("Privacy consent is required for registration");
             LocalDateTime timestamp = userRepository.findDataRetentionStartTimeById(LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC));
-            // LocalDateTime timestamp = LocalDateTime.now();
             return new JwtResponse(null, null, null, null, timestamp); // Return empty response if privacy consent is not given
         }
         
@@ -50,25 +47,4 @@ public class AuthService {
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         return new JwtResponse(token, user.getEmail(), user.getRole().name(), user.getFirstName(), user.getConsentTimestamp());
     }
-
-    // public void register(RegisterRequest request){
-    //     boolean privacyConsent = request.isPrivacyConsent();
-    //     if(!privacyConsent){
-    //         throw new IllegalArgumentException("Privacy consent is required for registration");
-    //     }else{
-    //         privacyPolicyAccepted = True;
-    //         privacyConsentTimestamp = LocalDateTime.now();
-
-            // Proceed with registration logic
-            // User user = new User();
-            // user.setFirstName(request.getFirstName());
-            // user.setLastName(request.getLastName());
-            // user.setEmail(request.getEmail());
-            // user.setPassword(passwordEncoder.encode(request.getPassword()));
-            // user.setRole(Role.CUSTOMER);
-            // user.setMarketingConsent(request.isMarketingConsent());
-            // user.setConsentTimestamp(LocalDateTime.now());
-            // userRepository.save(user);
-        // }
-    // }
 }

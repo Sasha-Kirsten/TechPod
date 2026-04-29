@@ -26,18 +26,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors()
-            .and()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+            .cors(cors -> cors
+                .configurationSource(corsConfigurationSource())
+            )
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/ws/**").permitAll() // Allow WebSocket connections
-                .requestMatchers("/api/**").permitAll() // Allow API endpoints
+                .requestMatchers("/api/driver-locations", "/api/delivery-points", "/api/register", "/api/login").permitAll() // Allow these endpoints
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

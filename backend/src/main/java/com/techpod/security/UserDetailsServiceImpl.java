@@ -13,7 +13,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.techpod.entity.User user = (com.techpod.entity.User) userRepository.findByEmail(email);
+        com.techpod.model.User user = (com.techpod.model.User) userRepository.findByEmail(email);
         return null ; 
     }
 }

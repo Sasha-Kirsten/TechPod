@@ -35,7 +35,8 @@ function Login(){
     const username = event.target.username.value;
     const password = event.target.password.value;
     try{
-      const res = await fetch('/api/login', {
+      // const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register`,
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({email: username, password})
@@ -47,17 +48,9 @@ function Login(){
       localStorage.setItem('token', data.token)
       window.location.href = '/laptop'
     } catch (error) {
-      console.error(error);
+      // console.error(error); 
       alert('Login failed. Please try again.');
     }
-    // const res = await fetch('/api/login', {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({email: username, password})
-    // })
-    // const data = await res.json()
-    // localStorage.setItem('token', data.token)
-    // window.location.href = '/laptop'
   }
   return(
   <section id="center">
@@ -80,12 +73,43 @@ function Login(){
 }
 
 function Register(){
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const firstName = event.target.firstName.value;
+    const lastName = event.target.lastName.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Registration failed');
+      }
+
+      alert('Registration successful! Please log in.');
+      window.location.href = '/login';
+    } catch (error) {
+      // console.error(error);
+      alert('Registration failed. Please try again.');
+    }
+  };
+
   return (
     <section id="center">
       <div>
         <h1>Register</h1>
-        {/* <p>Registration form coming soon!</p> */}
-        <form>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="firstName">First Name:</label>
+          <input type="text" id="firstName" name="firstName" required />
+          <br />
+          <label htmlFor="lastName">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" required />
+          <br />
           <label htmlFor="email">Email:</label>
           <input type="email" id="email" name="email" required />
           <br />
@@ -167,51 +191,92 @@ function Orders(){
   );
 }
 
-function Driver(){
-  const [driverLocation, setDriverLocation] = useState({ lat: 37.7749, lng: -122.4194 }); // Example location
-  const [deliveryPoints, setDeliveryPoints] = useState([
-    { lat: 37.7849, lng: -122.4094 },
-    { lat: 37.7649, lng: -122.4294 },
-  ]);
+function Driver() {
+  const [driverLocation, setDriverLocation] = useState([]);
+  const [deliveryPoints, setDeliveryPoints] = useState([]);
+
   useEffect(() => {
-    // Simulate real-time location updates
-    const interval = setInterval(() => {
-      setDriverLocation((prev) => ({
-        lat: prev.lat + (Math.random() - 0.5) * 0.01,
-        lng: prev.lng + (Math.random() - 0.5) * 0.01,
-      }));
-    }, 2000);
-    return () => clearInterval(interval);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found, redirecting to login");
+      window.location.href = "/login";
+      return;
+    }
+    fetch("/api/driver-locations", {
+      headers:{
+        Authorization: `Bearer ${token}`,
+      }
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setDriverLocation(data))
+      .catch((err) => console.error("Error fetching driver locations:", err));
+
+    fetch("/api/delivery-points", {
+      headers:{
+        Authorization: `Bearer ${token}`,
+      }
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setDeliveryPoints(data))
+      .catch((err) => console.error("Error fetching delivery points:", err));
   }, []);
+
   return (
     <section id="center">
       <div>
         <h1>Delivery Driver Dashboard</h1>
-        <p>Track your deliveries and manage your schedule.</p>
-        <span role="img" aria-label="driver" style={{ fontSize: "3rem" }}>🚚</span>
         <DriverMap
           deliveryPoints={deliveryPoints}
-          driverLocations={[driverLocation]}
+          driverLocation={driverLocation}
         />
-        <div>
+      </div>
+      <div>
           <Link to="/orders" className="role-btn driver">View Orders</Link>
           <Link to="/delivery-route" className="role-btn driver">View Delivery Route</Link>
           <Link to="/" className="role-btn driver">Back to Home</Link>
         </div>
-      </div>
     </section>
-  )
+  );
 }
 
 function Admin(){
-  const [driverLocations, setDriverLocations] = useState([
-    { lat: 37.7749, lng: -122.4194 }, // Example driver locations
-    { lat: 37.7849, lng: -122.4294 },
-  ]);
-  const [deliveryPoints, setDeliveryPoints] = useState([
-    { lat: 37.7949, lng: -122.4394 },
-    { lat: 37.7649, lng: -122.4094 },
-  ]);
+  const [driverLocations, setDriverLocations] = useState([]);
+  const [deliveryPoints, setDeliveryPoints] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found, redirecting to login");
+      window.location.href = "/login";
+      return;
+    }
+    // Fetch driver locations
+    fetch("/api/driver-locations", {
+      headers:{
+        Authorization: `Bearer ${token}`,
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => setDriverLocations(data))
+      .catch((err) => console.error("Error fetching driver locations:", err));
+
+    // Fetch delivery points
+    fetch("/api/delivery-points", {
+      headers:{
+        Authorization: `Bearer ${token}`,
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => setDeliveryPoints(data))
+      .catch((err) => console.error("Error fetching delivery points:", err));
+  }, []);
+
   return (
     <section id="center">
       <div>
@@ -247,13 +312,52 @@ function NotFound() {
 }
 
 function DeliveryRoute(){
+  const [route, setRoute] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [deliveryPoints, setDeliveryPoints] = useState([]);
+  useEffect(() => {
+    fetch("/api/routes")
+    .then((res) => res.json())
+    .then((data) => setRoute(data))
+    .catch((err) => console.error("Error fetching routes:", err));
+  }, []);
+  const handleRouteSelect = (routeId) => {
+    fetch(`/api/routes/${routeId}/points`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSelectedRoute(routeId);
+        setDeliveryPoints(data);
+      })
+      .catch((err) => console.error("Error fetching route details:", err));
+  }
   return (
     <section id="center">
       <div>
         <h1>Delivery Route</h1>
         <p>Track your delivery route in real-time.</p>
-        <span role="img" aria-label="route" style={{ fontSize: "3rem" }}>🗺️</span >
-        <h1>MAP!</h1>
+        {/* <span role="img" aria-label="route" style={{ fontSize: "3rem" }}>🗺️</span >
+        <h1>MAP!</h1> */}
+        <ul>
+          {routes.map((route) => (
+            <li key={route.id}>
+              <button onClick={() => handleRouteSelect(route.id)}>
+                {route.routeName}
+              </button>
+            </li>
+          ))}
+        </ul>
+        {selectedRoute && (
+          <div>
+            <h2>Selected Route: {selectedRoute}</h2>
+            <ul>
+              {deliveryPoints.map((point) => (
+                <li key={point.id}>
+                  {point.name} - {point.address}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div>
           <Link to="/orders" className="role-btn driver">View Orders</Link>
           <Link to="/" className="role-btn driver">Back to Home</Link>

@@ -41,4 +41,12 @@ public class OrderController {
                                               @RequestBody Map<String, String> body) {
         return ResponseEntity.ok(orderService.updateStatus(id, OrderStatus.valueOf(body.get("status"))));
     }
+
+    @GetMapping("/api/delivery-locations")
+    public List<DriverLocation> getDeliveryLocations() {
+        return List.of(
+            new DriverLocation(1, 37.7749, -122.4194),
+            new DriverLocation(2, 34.0522, -118.2437)
+        );
+    }
 }

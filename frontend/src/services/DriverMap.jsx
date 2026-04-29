@@ -13,7 +13,7 @@ const center = {
 
 const DriverMap = ({ deliveryPoints, driverLocation }) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your Google Maps API key
+    googleMapsApiKey: 'AIzaSyDbYrojZMUXUxhr0G3W-tgWSxYJqatlsso', // Replace with your Google Maps API key
   });
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps</div>;
@@ -22,22 +22,23 @@ const DriverMap = ({ deliveryPoints, driverLocation }) => {
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
       zoom={12}
-      center={driverLocation || center}
+      center={driverLocation[0] || center}
     >
       {deliveryPoints.map((point, index) => (
-        <Marker key={index} position={{ lat: point.lat, lng: point.lng }}
+        point.lat && point.lng && (
+        <Marker key={`delivery-${index}`} position={{ lat: point.lat, lng: point.lng }}
         label="📍"
         />
+        )
       ))}
-      {driverLocation.map((location, index) => (
+      {driverLocation.map((driver, index) => (
+        driver.lat && driver.lng && (
         <Marker
-          key={index}
-          position={{ lat: location.lat, lng: location.lng }}
+          key={`driver-${index}`}
+          position={{ lat: driver.lat, lng: driver.lng }}
           label="🚚"
-        //   icon={{
-        //     url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-        //   }}
         />
+        )
       ))}
     </GoogleMap>
   );
